@@ -1,6 +1,7 @@
 """
 Veritabanı katmanı — asyncpg PostgreSQL connection pool
 """
+import ssl
 import asyncpg
 from config import DATABASE_URL
 
@@ -9,8 +10,10 @@ _pool: asyncpg.Pool | None = None
 
 async def init_db() -> None:
     global _pool
-    # ssl='require' → Render (ve çoğu cloud PG) için zorunlu
-    _pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10, ssl="require")
+    ssl_ctx = ssl.create_default_context()
+    ssl_ctx.check_hostname = False
+    ssl_ctx.verify_mode = ssl.CERT_NONE
+    _pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10, ssl=ssl_ctx)
     await _create_tables()
 
 
