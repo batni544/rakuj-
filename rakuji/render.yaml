@@ -2,7 +2,7 @@ services:
   - type: web
     name: rakuji-security-bot
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install discord.py asyncpg python-dotenv APScheduler aiohttp
     startCommand: python bot.py
     envVars:
       - key: DISCORD_TOKEN
